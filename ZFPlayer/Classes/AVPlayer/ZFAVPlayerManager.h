@@ -23,7 +23,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
 #if __has_include(<ZFPlayer/ZFPlayerMediaPlayback.h>)
 #import <ZFPlayer/ZFPlayerMediaPlayback.h>
 #else
@@ -40,5 +40,9 @@
 @property (nonatomic, strong) NSDictionary *requestHeader;
 
 @property (nonatomic, strong, readonly) AVPlayerLayer *avPlayerLayer;
+@property (nonatomic, weak, nullable) id <AVPictureInPictureControllerDelegate> pictureInPictureDelegate;
+
+- (void)startPictureInPiture;
+- (void)stopPictureInPiture;
 
 @end

@@ -81,12 +81,13 @@ static NSString *const kPresentationSize         = @"presentationSize";
 
 @end
 
-@interface ZFAVPlayerManager () {
+@interface ZFAVPlayerManager () <AVPictureInPictureControllerDelegate> {
     id _timeObserver;
     id _itemEndObserver;
     ZFKVOController *_playerItemKVO;
 }
 @property (nonatomic, strong) AVPlayerLayer *playerLayer;
+@property (nonatomic, strong) AVPictureInPictureController *pictureInPictureController;
 @property (nonatomic, assign) BOOL isBuffering;
 @property (nonatomic, assign) BOOL isReadyToPlay;
 @property (nonatomic, strong) AVAssetImageGenerator *imageGenerator;
@@ -238,6 +239,14 @@ static NSString *const kPresentationSize         = @"presentationSize";
     }];
 }
 
+- (void)startPictureInPiture {
+    [self.pictureInPictureController startPictureInPicture];
+}
+
+- (void)stopPictureInPiture {
+    [self.pictureInPictureController stopPictureInPicture];
+}
+
 #pragma mark - private method
 
 /// Calculate buffer progress
@@ -267,6 +276,7 @@ static NSString *const kPresentationSize         = @"presentationSize";
     _asset = [AVURLAsset URLAssetWithURL:self.assetURL options:self.requestHeader];
     _playerItem = [AVPlayerItem playerItemWithAsset:_asset];
     _player = [AVPlayer playerWithPlayerItem:_playerItem];
+
     _imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:_asset];
 
     [self enableAudioTracks:YES inPlayerItem:_playerItem];
@@ -274,6 +284,12 @@ static NSString *const kPresentationSize         = @"presentationSize";
     ZFPlayerPresentView *presentView = [[ZFPlayerPresentView alloc] init];
     presentView.player = _player;
     self.view.playerView = presentView;
+
+    _pictureInPictureController = [[AVPictureInPictureController alloc] initWithPlayerLayer:[presentView avLayer]];
+    if (@available(iOS 14.2, *)) {
+        _pictureInPictureController.canStartPictureInPictureAutomaticallyFromInline = TRUE;
+    }
+    _pictureInPictureController.delegate = self;
 
     self.scalingMode = _scalingMode;
     if (@available(iOS 9.0, *)) {
@@ -351,7 +367,9 @@ static NSString *const kPresentationSize         = @"presentationSize";
         @zf_strongify(self)
         if (!self) return;
         NSArray *loadedRanges = self.playerItem.seekableTimeRanges;
-        if (self.isPlaying && self.loadState == ZFPlayerLoadStateStalled) self.player.rate = self.rate;
+        if (self.isPlaying && self.loadState == ZFPlayerLoadStateStalled) {
+            self.player.rate = self.rate;
+        }
         if (loadedRanges.count > 0) {
             if (self.playerPlayTimeChanged) self.playerPlayTimeChanged(self, self.currentTime, self.totalTime);
         }
@@ -408,7 +426,7 @@ static NSString *const kPresentationSize         = @"presentationSize";
             // When the buffer is good
             if (self.playerItem.playbackLikelyToKeepUp) {
                 self.loadState = ZFPlayerLoadStatePlayable;
-                if (self.isPlaying) [self.player play];
+                if (self.isPlaying && ![self.pictureInPictureController isPictureInPictureActive]) [self.player play];
             }
         } else if ([keyPath isEqualToString:kLoadedTimeRanges]) {
             NSTimeInterval bufferTime = [self availableDuration];
@@ -438,7 +456,7 @@ static NSString *const kPresentationSize         = @"presentationSize";
 }
 
 - (float)rate {
-    return _rate == 0 ?1:_rate;
+    return _rate == 0 ? 1 : _rate;
 }
 
 - (NSTimeInterval)totalTime {
@@ -520,6 +538,30 @@ static NSString *const kPresentationSize         = @"presentationSize";
     if (self.presentationSizeChanged) {
         self.presentationSizeChanged(self, self.presentationSize);
     }
+}
+
+- (void)pictureInPictureControllerWillStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
+    [self.pictureInPictureDelegate pictureInPictureControllerWillStartPictureInPicture:pictureInPictureController];
+}
+
+- (void)pictureInPictureControllerDidStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
+    [self.pictureInPictureDelegate pictureInPictureControllerDidStartPictureInPicture:pictureInPictureController];
+}
+
+- (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController failedToStartPictureInPictureWithError:(NSError *)error {
+    [self.pictureInPictureDelegate pictureInPictureController:pictureInPictureController failedToStartPictureInPictureWithError:error];
+}
+
+- (void)pictureInPictureControllerWillStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
+    [self.pictureInPictureDelegate pictureInPictureControllerWillStopPictureInPicture:pictureInPictureController];
+}
+
+- (void)pictureInPictureControllerDidStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
+    [self.pictureInPictureDelegate pictureInPictureControllerDidStopPictureInPicture:pictureInPictureController];
+}
+
+- (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:(void (^)(BOOL restored))completionHandler {
+    [self.pictureInPictureDelegate pictureInPictureController:pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:completionHandler];
 }
 
 @end
