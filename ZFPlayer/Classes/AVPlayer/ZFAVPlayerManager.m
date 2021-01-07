@@ -540,30 +540,6 @@ static NSString *const kPresentationSize         = @"presentationSize";
     }
 }
 
-- (void)pictureInPictureControllerWillStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
-    [self.pictureInPictureDelegate pictureInPictureControllerWillStartPictureInPicture:pictureInPictureController];
-}
-
-- (void)pictureInPictureControllerDidStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
-    [self.pictureInPictureDelegate pictureInPictureControllerDidStartPictureInPicture:pictureInPictureController];
-}
-
-- (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController failedToStartPictureInPictureWithError:(NSError *)error {
-    [self.pictureInPictureDelegate pictureInPictureController:pictureInPictureController failedToStartPictureInPictureWithError:error];
-}
-
-- (void)pictureInPictureControllerWillStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
-    [self.pictureInPictureDelegate pictureInPictureControllerWillStopPictureInPicture:pictureInPictureController];
-}
-
-- (void)pictureInPictureControllerDidStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
-    [self.pictureInPictureDelegate pictureInPictureControllerDidStopPictureInPicture:pictureInPictureController];
-}
-
-- (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:(void (^)(BOOL restored))completionHandler {
-    [self.pictureInPictureDelegate pictureInPictureController:pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:completionHandler];
-}
-
 @end
 
 #pragma clang diagnostic pop

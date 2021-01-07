@@ -40,7 +40,7 @@
 @property (nonatomic, strong) NSDictionary *requestHeader;
 
 @property (nonatomic, strong, readonly) AVPlayerLayer *avPlayerLayer;
-@property (nonatomic, weak, nullable) id <AVPictureInPictureControllerDelegate> pictureInPictureDelegate;
+@property (nonatomic, strong, readonly) AVPictureInPictureController *pictureInPictureController;
 
 - (void)startPictureInPiture;
 - (void)stopPictureInPiture;
