@@ -203,7 +203,7 @@ static NSString *const kPresentationSize         = @"presentationSize";
 - (void)seekToTime:(NSTimeInterval)time completionHandler:(void (^ __nullable)(BOOL finished))completionHandler {
     if (self.totalTime > 0) {
         [_player.currentItem cancelPendingSeeks];
-        int32_t timeScale = _player.currentItem.asset.duration. timescale;
+        int32_t timeScale = _player.currentItem.asset.duration.timescale;
         CMTime seekTime = CMTimeMakeWithSeconds(time, timeScale);
         [_player seekToTime:seekTime toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:completionHandler];
     } else {
@@ -289,7 +289,6 @@ static NSString *const kPresentationSize         = @"presentationSize";
     if (@available(iOS 14.2, *)) {
         _pictureInPictureController.canStartPictureInPictureAutomaticallyFromInline = TRUE;
     }
-    _pictureInPictureController.delegate = self;
 
     self.scalingMode = _scalingMode;
     if (@available(iOS 9.0, *)) {
