@@ -289,7 +289,6 @@ static NSString *const kPresentationSize         = @"presentationSize";
     if (@available(iOS 14.2, *)) {
         _pictureInPictureController.canStartPictureInPictureAutomaticallyFromInline = TRUE;
     }
-    _pictureInPictureController.delegate = self;
 
     self.scalingMode = _scalingMode;
     if (@available(iOS 9.0, *)) {
