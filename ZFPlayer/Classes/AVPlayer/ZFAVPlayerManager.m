@@ -239,11 +239,11 @@ static NSString *const kPresentationSize         = @"presentationSize";
     }];
 }
 
-- (void)startPictureInPiture {
+- (void)startPictureInPicture {
     [self.pictureInPictureController startPictureInPicture];
 }
 
-- (void)stopPictureInPiture {
+- (void)stopPictureInPicture {
     [self.pictureInPictureController stopPictureInPicture];
 }
 
