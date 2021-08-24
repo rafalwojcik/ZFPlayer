@@ -42,7 +42,7 @@
 @property (nonatomic, strong, readonly) AVPlayerLayer *avPlayerLayer;
 @property (nullable, nonatomic, strong, readonly) AVPictureInPictureController *pictureInPictureController;
 
-- (void)startPictureInPiture;
-- (void)stopPictureInPiture;
+- (void)startPictureInPicture;
+- (void)stopPictureInPicture;
 
 @end
